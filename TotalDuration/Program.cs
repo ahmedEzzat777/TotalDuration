@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
 using Xabe.FFmpeg;
+using Xabe.FFmpeg.Exceptions;
 
 namespace TotalDuration
 {
@@ -85,6 +86,12 @@ namespace TotalDuration
             {
                 var info = FFmpeg.GetMediaInfo(filePath).Result;
                 return (long)info.Duration.TotalMilliseconds;
+            }
+            catch(FFmpegNotFoundException e)
+            {
+                Console.WriteLine("ffmpeg not installed.");
+                Environment.Exit(1);
+                throw e;
             }
             catch
             {
