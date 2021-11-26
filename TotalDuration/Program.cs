@@ -24,7 +24,7 @@ namespace TotalDuration
                         if (arg.ToLower().Contains("ffmpeg"))
                             useFFmpeg = true;
                     }
-                    else if (IsValidDirectory(args[0]))
+                    else if (IsValidDirectory(arg))
                     { 
                         dir = arg;
                     }
