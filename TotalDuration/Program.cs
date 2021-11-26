@@ -35,6 +35,9 @@ namespace TotalDuration
             if (span.Days > 0)
                 b.Append($"{span.Days} days ");
 
+            if (span.Minutes > 0)
+                b.Append($"{span.Minutes} minutes ");
+
             if (span.Hours > 0)
                 b.Append($"{span.Hours} hours ");
 
