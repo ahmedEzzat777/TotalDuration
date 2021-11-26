@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
+using Xabe.FFmpeg;
 
 namespace TotalDuration
 {
@@ -12,13 +13,26 @@ namespace TotalDuration
         static void Main(string[] args)
         {
             var dir = Environment.CurrentDirectory;
+            var useFFmpeg = false;
 
             if (args.Length > 0)
-                if (IsValidDirectory(args[0]))
-                    dir = args[0];
+            {
+                foreach (var arg in args)
+                {
+                    if (arg.StartsWith("--"))
+                    {
+                        if (arg.ToLower().Contains("ffmpeg"))
+                            useFFmpeg = true;
+                    }
+                    else if (IsValidDirectory(args[0]))
+                    { 
+                        dir = arg;
+                    }
+                }
+            }
 
             var totalDuration = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories)
-                .Select(f => (long)(GetFileDuration(f)/10000))
+                .Select(f => useFFmpeg ? GetFileDurationFFmpeg(f) : GetFileDuration(f))
                 .Sum();
 
             var span = TimeSpan.FromMilliseconds(totalDuration);
@@ -68,14 +82,27 @@ namespace TotalDuration
             }
         }
 
-        private static ulong GetFileDuration(string filePath) //in 100ns
+        private static long GetFileDurationFFmpeg(string filePath)
+        {
+            try
+            {
+                var info = FFmpeg.GetMediaInfo(filePath).Result;
+                return (long)info.Duration.TotalMilliseconds;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        private static long GetFileDuration(string filePath)
         {
             try
             {
                 using (ShellObject shell = ShellObject.FromParsingName(filePath))
                 {
                     IShellProperty prop = shell.Properties.System.Media.Duration;
-                    return (ulong)prop.ValueAsObject;
+                    return Convert.ToInt64(prop.ValueAsObject) / 10000;
                 }
             }
             catch
