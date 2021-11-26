@@ -35,11 +35,11 @@ namespace TotalDuration
             if (span.Days > 0)
                 b.Append($"{span.Days} days ");
 
-            if (span.Minutes > 0)
-                b.Append($"{span.Minutes} minutes ");
-
             if (span.Hours > 0)
                 b.Append($"{span.Hours} hours ");
+
+            if (span.Minutes > 0)
+                b.Append($"{span.Minutes} minutes ");
 
             if (span.Seconds > 0)
                 b.Append($"{span.Seconds} seconds ");
@@ -54,6 +54,7 @@ namespace TotalDuration
 
             return formatted.Trim();
         }
+
         private static bool IsValidDirectory(string dir)
         {
             try
@@ -66,7 +67,6 @@ namespace TotalDuration
                 return false;
             }
         }
-
 
         private static ulong GetFileDuration(string filePath) //in 100ns
         {
