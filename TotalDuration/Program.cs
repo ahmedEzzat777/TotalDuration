@@ -15,19 +15,16 @@ namespace TotalDuration
             var dir = Environment.CurrentDirectory;
             var useFFmpeg = false;
 
-            if (args.Length > 0)
+            foreach (var arg in args)
             {
-                foreach (var arg in args)
+                if (arg.StartsWith("--"))
                 {
-                    if (arg.StartsWith("--"))
-                    {
-                        if (arg.ToLower().Contains("ffmpeg"))
-                            useFFmpeg = true;
-                    }
-                    else if (IsValidDirectory(arg))
-                    { 
-                        dir = arg;
-                    }
+                    if (arg.ToLower().Contains("ffmpeg"))
+                        useFFmpeg = true;
+                }
+                else if (IsValidDirectory(arg))
+                { 
+                    dir = arg;
                 }
             }
 
